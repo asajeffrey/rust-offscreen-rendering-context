@@ -123,6 +123,11 @@ impl DeviceInterface for Device {
         Device::native_context(self, context)
     }
 
+    #[inline]
+    fn current_native_context(&self) -> Result<Self::NativeContext, Error> {
+        Device::current_native_context(self)
+    }
+
     // surface.rs
 
     #[inline]

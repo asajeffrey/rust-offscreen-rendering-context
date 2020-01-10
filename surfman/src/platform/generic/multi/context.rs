@@ -140,6 +140,18 @@ impl<Def, Alt> Device<Def, Alt> where Def: DeviceInterface, Alt: DeviceInterface
         }
     }
 
+    /// Returns the current native context if there is one
+    pub fn current_native_context(&self) -> Result<NativeContext<Def, Alt>, Error> {
+        match self {
+            Device::Default(ref device) => {
+                Ok(NativeContext::Default(device.current_native_context()?))
+            }
+            Device::Alternate(ref device) => {
+                Ok(NativeContext::Alternate(device.current_native_context()?))
+            }
+        }
+    }
+
     /// Returns the descriptor that this context was created with.
     pub fn context_descriptor(&self, context: &Context<Def, Alt>) -> ContextDescriptor<Def, Alt> {
         match (self, context) {

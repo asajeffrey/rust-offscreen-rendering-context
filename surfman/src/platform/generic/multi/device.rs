@@ -157,6 +157,11 @@ impl<Def, Alt> DeviceInterface for Device<Def, Alt>
     }
 
     #[inline]
+    fn current_native_context(&self) -> Result<Self::NativeContext, Error> {
+        Device::current_native_context(self)
+    }
+
+    #[inline]
     fn context_descriptor(&self, context: &Context<Def, Alt>) -> Self::ContextDescriptor {
         Device::context_descriptor(self, context)
     }

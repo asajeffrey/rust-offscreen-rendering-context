@@ -99,6 +99,11 @@ impl Device {
         context.0.native_context()
     }
 
+    /// Returns the current native context if there is one
+    pub fn current_native_context(&self) -> Result<NativeContext, Error> {
+        NativeContext::current()
+    }
+
     /// Returns the descriptor that this context was created with.
     #[inline]
     pub fn context_descriptor(&self, context: &Context) -> ContextDescriptor {

@@ -124,6 +124,9 @@ pub trait Device: Sized where Self::Connection: ConnectionInterface {
     /// Returns the native context associated with the given context.
     fn native_context(&self, context: &Self::Context) -> Self::NativeContext;
 
+    /// Returns the current native context if there is one
+    fn current_native_context(&self) -> Result<Self::NativeContext, Error>;
+
     // surface.rs
 
     /// Creates either a generic or a widget surface, depending on the supplied surface type.

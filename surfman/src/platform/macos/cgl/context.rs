@@ -434,6 +434,11 @@ impl Device {
             NativeContext(CGLRetainContext(context.cgl_context))
         }
     }
+
+    /// Returns the current native context if there is one
+    pub fn current_native_context(&self) -> Result<NativeContext, Error> {
+        NativeContext::current()
+    }
 }
 
 fn get_proc_address(symbol_name: &str) -> *const c_void {

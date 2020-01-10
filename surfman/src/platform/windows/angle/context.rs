@@ -360,4 +360,10 @@ impl Device {
             egl_read_surface,
         }
     }
+
+    /// Returns the current native context if there is one
+    pub fn current_native_context(&self) -> Result<NativeContext, Error> {
+        NativeContext::current()
+    }
+
 }
