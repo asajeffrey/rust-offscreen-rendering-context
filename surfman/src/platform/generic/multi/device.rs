@@ -13,6 +13,9 @@ use super::surface::{NativeWidget, Surface, SurfaceTexture};
 
 use std::os::raw::c_void;
 
+#[cfg(feature = "sm-winit")]
+use winit::Window;
+
 /// Represents a hardware display adapter that can be used for rendering (including the CPU).
 ///
 /// Adapters can be sent between threads. To render with an adapter, open a thread-local `Device`.
@@ -92,6 +95,7 @@ impl<Def, Alt> Device<Def, Alt> where Def: DeviceInterface,
     }
 }
 
+#[deny(unconditional_recursion)]
 impl<Def, Alt> DeviceInterface for Device<Def, Alt>
                                where Def: DeviceInterface,
                                      Alt: DeviceInterface,
@@ -154,6 +158,12 @@ impl<Def, Alt> DeviceInterface for Device<Def, Alt>
     #[inline]
     fn native_context(&self, context: &Context<Def, Alt>) -> Self::NativeContext {
         Device::native_context(self, context)
+    }
+
+    #[cfg(feature = "sm-winit")]
+    fn create_native_context_from_winit_window(&self, window: &Window)
+                                              -> Result<Self::NativeContext, Error> {
+        Device::create_native_context_from_winit_window(self, window)
     }
 
     #[inline]

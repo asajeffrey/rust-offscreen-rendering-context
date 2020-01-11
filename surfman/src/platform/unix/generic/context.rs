@@ -12,6 +12,9 @@ use super::surface::Surface;
 
 use std::os::raw::c_void;
 
+#[cfg(feature = "sm-winit")]
+use winit::Window;
+
 pub use crate::platform::generic::egl::context::{ContextDescriptor, NativeContext};
 
 thread_local! {
@@ -98,6 +101,13 @@ impl Device {
     #[inline]
     pub fn native_context(&self, context: &Context) -> NativeContext {
         context.0.native_context()
+    }
+
+    /// Creates a native context type from the given `winit` window.
+    #[cfg(feature = "sm-winit")]
+    pub fn create_native_context_from_winit_window(&self, _window: &Window)
+                                              -> Result<NativeContext, Error> {
+        unimplemented!()
     }
 
     /// Returns the descriptor that this context was created with.

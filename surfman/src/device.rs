@@ -8,6 +8,9 @@ use super::connection::Connection as ConnectionInterface;
 
 use std::os::raw::c_void;
 
+#[cfg(feature = "sm-winit")]
+use winit::Window;
+
 /// A thread-local handle to a device.
 ///
 /// Devices contain most of the relevant surface management methods.
@@ -123,6 +126,11 @@ pub trait Device: Sized where Self::Connection: ConnectionInterface {
 
     /// Returns the native context associated with the given context.
     fn native_context(&self, context: &Self::Context) -> Self::NativeContext;
+
+    /// Creates a native context type from the given `winit` window.
+    #[cfg(feature = "sm-winit")]
+    fn create_native_context_from_winit_window(&self, window: &Window)
+                                              -> Result<Self::NativeContext, Error>;
 
     // surface.rs
 

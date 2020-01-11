@@ -9,6 +9,9 @@ use super::surface::Surface;
 
 use std::os::raw::c_void;
 
+#[cfg(feature = "sm-winit")]
+use winit::Window;
+
 /// Represents an OpenGL rendering context.
 /// 
 /// A context allows you to issue rendering commands to a surface. When initially created, a
@@ -137,6 +140,16 @@ impl<Def, Alt> Device<Def, Alt> where Def: DeviceInterface, Alt: DeviceInterface
                 NativeContext::Alternate(device.native_context(context))
             }
             _ => panic!("Incompatible context!"),
+        }
+    }
+
+    /// Creates a native context type from the given `winit` window.
+    #[cfg(feature = "sm-winit")]
+    pub fn create_native_context_from_winit_window(&self, window: &Window)
+                                              -> Result<NativeContext<Def, Alt>, Error> {
+        match self {
+            &Device::Default(ref device) => Ok(NativeContext::Default(device.create_native_context_from_winit_window(window)?)),
+            &Device::Alternate(ref device) => Ok(NativeContext::Alternate(device.create_native_context_from_winit_window(window)?)),
         }
     }
 

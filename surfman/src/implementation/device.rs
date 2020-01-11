@@ -14,6 +14,10 @@ use super::super::surface::{NativeWidget, Surface, SurfaceTexture};
 
 use std::os::raw::c_void;
 
+#[cfg(feature = "sm-winit")]
+use winit::Window;
+
+#[deny(unconditional_recursion)]
 impl DeviceInterface for Device {
     type Connection = Connection;
     type Context = Context;
@@ -121,6 +125,12 @@ impl DeviceInterface for Device {
     #[inline]
     fn native_context(&self, context: &Self::Context) -> Self::NativeContext {
         Device::native_context(self, context)
+    }
+
+    #[cfg(feature = "sm-winit")]
+    fn create_native_context_from_winit_window(&self, window: &Window)
+                                              -> Result<Self::NativeContext, Error> {
+        Device::create_native_context_from_winit_window(self, window)
     }
 
     // surface.rs
