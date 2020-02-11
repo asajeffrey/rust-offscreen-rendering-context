@@ -25,6 +25,7 @@ pub const EGL_PLATFORM_X11_KHR:                  EGLenum = 0x31d5;
 pub const EGL_PLATFORM_WAYLAND_KHR:              EGLenum = 0x31d8;
 pub const EGL_PLATFORM_SURFACELESS_MESA:         EGLenum = 0x31dd;
 pub const EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE: EGLenum = 0x3200;
+pub const EGL_DEVICE_EXT:                        EGLenum = 0x322C;
 pub const EGL_D3D11_DEVICE_ANGLE:                EGLenum = 0x33a1;
 pub const EGL_DXGI_KEYED_MUTEX_ANGLE:            EGLenum = 0x33a2;
 pub const EGL_D3D_TEXTURE_ANGLE:                 EGLenum = 0x33a3;

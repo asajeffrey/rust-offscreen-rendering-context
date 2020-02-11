@@ -2,11 +2,12 @@
 //
 //! A thread-local handle to the device.
 
-use crate::egl::types::{EGLAttrib, EGLDisplay, EGLint};
+use crate::egl::types::{EGLAttrib, EGLDeviceEXT, EGLDisplay, EGLint};
 use crate::egl;
 use crate::platform::generic::egl::device::EGL_FUNCTIONS;
 use crate::platform::generic::egl::ffi::{EGL_D3D11_DEVICE_ANGLE, EGL_EXTENSION_FUNCTIONS};
 use crate::platform::generic::egl::ffi::{EGL_NO_DEVICE_EXT, EGL_PLATFORM_DEVICE_EXT};
+use crate::platform::generic::egl::ffi::EGL_DEVICE_EXT;
 use crate::{Error, GLApi};
 use super::connection::Connection;
 
@@ -62,6 +63,38 @@ pub struct NativeDevice {
     pub d3d11_device: *mut ID3D11Device,
     /// The Direct3D driver type that the device was created with.
     pub d3d_driver_type: D3D_DRIVER_TYPE,
+}
+
+impl NativeDevice {
+    /// Create a `NativeDevice` from an `EGLDisplay`.
+    pub unsafe fn from_egl_display(egl_display: EGLDisplay, d3d_driver_type: D3D_DRIVER_TYPE)
+                                   -> Option<NativeDevice> {
+        let mut egl_device: EGLDeviceEXT = ptr::null();
+        let mut d3d11_device: *mut ID3D11Device = ptr::null_mut();
+        #[allow(non_snake_case)]
+        let eglQueryDeviceAttribEXT =
+            EGL_EXTENSION_FUNCTIONS.QueryDeviceAttribEXT
+                                   .expect("Where's the `EGL_EXT_device_query` \
+                                            extension?");
+        #[allow(non_snake_case)]
+        let eglQueryDisplayAttribEXT =
+            EGL_EXTENSION_FUNCTIONS.QueryDisplayAttribEXT
+                                   .expect("Where's the `EGL_EXT_device_query` \
+                                            extension?");
+        eglQueryDisplayAttribEXT(egl_display,
+                                 EGL_DEVICE_EXT as EGLint,
+                                 &mut egl_device as *mut _ as *mut _);
+        if egl_device.is_null() {
+            return None;
+        }
+        eglQueryDeviceAttribEXT(egl_device,
+                                EGL_D3D11_DEVICE_ANGLE as EGLint,
+                                &mut d3d11_device as *mut _ as *mut _);
+        if d3d11_device.is_null() {
+            return None;
+        }
+        Some(NativeDevice { egl_display, d3d11_device, d3d_driver_type })
+    }
 }
 
 impl Adapter {

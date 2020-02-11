@@ -21,6 +21,7 @@ pub enum GLApi {
 /// 
 /// Since OpenGL and OpenGL ES have different version numbering schemes, the valid values here
 /// depend on the value of `Device::gl_api()`.
+#[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct GLVersion {
     /// The major OpenGL version (e.g. 4 in 4.2).
