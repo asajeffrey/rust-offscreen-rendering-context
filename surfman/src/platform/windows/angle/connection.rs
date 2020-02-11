@@ -119,7 +119,7 @@ impl Connection {
     #[inline]
     pub fn create_native_widget_from_winit_window(&self, window: &Window)
                                                   -> Result<NativeWidget, Error> {
-        let hwnd = window.get_hwnd() as HWND;
+        let hwnd = window.get_hwnd();
         if hwnd.is_null() {
             Err(Error::IncompatibleNativeWidget)
         } else {
