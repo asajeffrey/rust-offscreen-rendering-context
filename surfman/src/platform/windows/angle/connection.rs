@@ -123,7 +123,7 @@ impl Connection {
         if hwnd.is_null() {
             Err(Error::IncompatibleNativeWidget)
         } else {
-            Ok(NativeWidget { window_handle: hwnd })
+            Ok(NativeWidget { egl_native_window: hwnd })
         }
     }
 }
