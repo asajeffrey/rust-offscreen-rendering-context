@@ -71,7 +71,7 @@ mod gl {
 
 #[cfg(any(target_os = "android", all(target_os = "windows", feature = "sm-angle"), unix))]
 #[allow(non_camel_case_types)]
-mod egl {
+pub mod egl {
     use std::os::raw::{c_long, c_void};
     pub type khronos_utime_nanoseconds_t = khronos_uint64_t;
     pub type khronos_uint64_t = u64;
@@ -83,5 +83,6 @@ mod egl {
     pub type NativeDisplayType = EGLNativeDisplayType;
     pub type NativePixmapType = EGLNativePixmapType;
     pub type NativeWindowType = EGLNativeWindowType;
+    pub use crate::platform::generic::egl::device::EGL_FUNCTIONS;
     include!(concat!(env!("OUT_DIR"), "/egl_bindings.rs"));
 }
