@@ -32,8 +32,8 @@ script:
   - cargo build --verbose --features=sm-winit
   - rustup target add arm-linux-androideabi
   - cargo build --verbose --target=arm-linux-androideabi
-  - rustup target add aarch64-uwp-windows-msvc
-  - cargo build --verbose --target=aarch64-uwp-windows-msvc
+  - rustup target add aarch64-pc-windows-msvc
+  - cargo build --verbose --target=aarch64-pc-windows-msvc
   # TODO: tests
   # - cargo test --verbose
   # - cargo test --verbose --features test_egl_in_linux
