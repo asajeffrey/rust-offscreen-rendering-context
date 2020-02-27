@@ -336,6 +336,9 @@ pub(crate) unsafe fn bind_egl_image_to_gl_texture(gl: &Gl, egl_image: EGLImageKH
     gl.GenTextures(1, &mut texture);
     debug_assert_ne!(texture, 0);
 
+    let mut texture_binding = 0;
+    gl.GetIntegerv(gl::TEXTURE_BINDING_2D, &mut texture_binding);
+
     // FIXME(pcwalton): Should this be `GL_TEXTURE_EXTERNAL_OES`?
     gl.BindTexture(gl::TEXTURE_2D, texture);
     (EGL_EXTENSION_FUNCTIONS.ImageTargetTexture2DOES)(gl::TEXTURE_2D, egl_image);
@@ -343,7 +346,7 @@ pub(crate) unsafe fn bind_egl_image_to_gl_texture(gl: &Gl, egl_image: EGLImageKH
     gl.TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as GLint);
     gl.TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::CLAMP_TO_EDGE as GLint);
     gl.TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::CLAMP_TO_EDGE as GLint);
-    gl.BindTexture(gl::TEXTURE_2D, 0);
+    gl.BindTexture(gl::TEXTURE_2D, texture_binding as GLuint);
 
     debug_assert_eq!(gl.GetError(), gl::NO_ERROR);
     texture
