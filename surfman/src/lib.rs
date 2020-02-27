@@ -83,6 +83,5 @@ pub mod egl {
     pub type NativeDisplayType = EGLNativeDisplayType;
     pub type NativePixmapType = EGLNativePixmapType;
     pub type NativeWindowType = EGLNativeWindowType;
-    pub use crate::platform::generic::egl::device::EGL_FUNCTIONS;
     include!(concat!(env!("OUT_DIR"), "/egl_bindings.rs"));
 }
