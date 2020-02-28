@@ -214,7 +214,7 @@ impl Connection {
     /// Create a native widget from a raw pointer
     pub unsafe fn create_native_widget_from_ptr(&self, raw: *mut c_void, _size: Size2D<i32>) -> NativeWidget {
         NativeWidget {
-            window: raw as Window,
+            window: std::mem::transmute(raw),
         }
     }
 }

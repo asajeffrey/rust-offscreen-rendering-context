@@ -9,6 +9,7 @@
 
 use crate::Error;
 use crate::GLApi;
+use crate::egl::types::EGLNativeWindowType;
 use super::device::{Adapter, Device, NativeDevice, VendorPreference};
 use super::surface::NativeWidget;
 

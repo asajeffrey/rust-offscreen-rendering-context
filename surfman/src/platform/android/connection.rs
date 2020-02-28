@@ -7,6 +7,7 @@
 use crate::Error;
 use crate::GLApi;
 use super::device::{Adapter, Device, NativeDevice};
+use super::ffi::ANativeWindow;
 use super::surface::NativeWidget;
 
 use euclid::default::Size2D;
