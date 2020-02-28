@@ -12,6 +12,10 @@ use crate::GLApi;
 use super::device::{Adapter, Device, NativeDevice, VendorPreference};
 use super::surface::NativeWidget;
 
+use euclid::default::Size2D;
+
+use std::os::raw::c_void;
+
 use winapi::shared::minwindef::UINT;
 use winapi::shared::windef::HWND;
 use winapi::um::d3dcommon::{D3D_DRIVER_TYPE_UNKNOWN, D3D_DRIVER_TYPE_WARP};
@@ -131,6 +135,13 @@ impl Connection {
             Err(Error::IncompatibleNativeWidget)
         } else {
             Ok(NativeWidget { egl_native_window: hwnd })
+        }
+    }
+
+    /// Create a native widget from a raw pointer
+    pub unsafe fn create_native_widget_from_ptr(&self, raw: *mut c_void, _size: Size2D<i32>) -> NativeWidget {
+        NativeWidget {
+            egl_native_window: raw as EGLNativeWindowType,
         }
     }
 }
