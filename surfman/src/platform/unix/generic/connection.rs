@@ -11,7 +11,7 @@ use crate::platform::generic::egl::ffi::EGL_PLATFORM_SURFACELESS_MESA;
 use super::device::{Adapter, Device, NativeDevice};
 use super::surface::NativeWidget;
 
-use euclid::Size2D;
+use euclid::default::Size2D;
 
 use std::os::raw::c_void;
 use std::sync::Arc;
