@@ -23,9 +23,9 @@ extern crate log;
 extern crate objc;
 
 pub mod platform;
-pub use platform::default::connection::Connection;
-pub use platform::default::context::{Context, ContextDescriptor};
-pub use platform::default::device::{Adapter, Device};
+pub use platform::default::connection::{Connection, NativeConnection};
+pub use platform::default::context::{Context, ContextDescriptor, NativeContext};
+pub use platform::default::device::{Adapter, Device, NativeDevice};
 pub use platform::default::surface::{NativeWidget, Surface, SurfaceTexture};
 
 // TODO(pcwalton): Fill this in with other OS's.
