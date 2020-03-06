@@ -93,6 +93,12 @@ impl EGLBackedSurface {
             let mut texture_object = 0;
             gl.GenTextures(1, &mut texture_object);
             gl.BindTexture(gl::TEXTURE_2D, texture_object);
+            // Unbind PIXEL_UNPACK_BUFFER, because if it is bound,
+            // it can cause errors in glTexImage2D.
+            // TODO: should this be inside a check for GL 2.0?
+            let mut unpack_buffer = 0;
+            gl.GetIntegerv(gl::PIXEL_UNPACK_BUFFER_BINDING, &mut unpack_buffer);
+            gl.BindBuffer(gl::PIXEL_UNPACK_BUFFER, 0);
             gl.TexImage2D(gl::TEXTURE_2D,
                           0,
                           gl::RGBA as GLint,
@@ -102,6 +108,7 @@ impl EGLBackedSurface {
                           gl::RGBA,
                           gl::UNSIGNED_BYTE,
                           ptr::null());
+            gl.BindBuffer(gl::PIXEL_UNPACK_BUFFER, unpack_buffer as _);
 
             // Create our image.
             let egl_client_buffer = texture_object as usize as EGLClientBuffer;
