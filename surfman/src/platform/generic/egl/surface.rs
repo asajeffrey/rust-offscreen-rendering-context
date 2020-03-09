@@ -92,6 +92,9 @@ impl EGLBackedSurface {
             // Create our texture.
             let mut texture_object = 0;
             gl.GenTextures(1, &mut texture_object);
+            // Save the current texture binding
+            let mut old_texture_object = 0;
+            gl.GetIntegerv(gl::TEXTURE_BINDING_2D, &mut old_texture_object);
             gl.BindTexture(gl::TEXTURE_2D, texture_object);
             // Unbind PIXEL_UNPACK_BUFFER, because if it is bound,
             // it can cause errors in glTexImage2D.
@@ -108,6 +111,8 @@ impl EGLBackedSurface {
                           gl::RGBA,
                           gl::UNSIGNED_BYTE,
                           ptr::null());
+            // Restore the old bindings
+            gl.BindTexture(gl::TEXTURE_2D, old_texture_object as _);
             if unpack_buffer != 0 { gl.BindBuffer(gl::PIXEL_UNPACK_BUFFER, unpack_buffer as _); }
 
             // Create our image.
