@@ -84,7 +84,7 @@ impl Device {
                           access: SurfaceAccess,
                           surface_type: SurfaceType<NativeWidget>)
                           -> Result<Surface, Error> {
-        let system_surface = self.0.create_surface(access, surface_type)?;
+        let mut system_surface = self.0.create_surface(access, surface_type)?;
 
         let _guard = self.temporarily_make_context_current(context);
         GL_FUNCTIONS.with(|gl| {
@@ -120,6 +120,7 @@ impl Device {
                     if texture_object != 0 {
                         gl.DeleteTextures(1, &mut texture_object);
                     }
+                    self.0.destroy_surface(&mut system_surface);
                     // TODO: convert the GL error into a surfman error?
                     return Err(Error::SurfaceCreationFailed(WindowingApiError::Failed));
                 }
