@@ -7,7 +7,7 @@ use crate::gl::types::{GLenum, GLint, GLuint};
 use crate::gl_utils;
 use crate::platform::macos::system::surface::Surface as SystemSurface;
 use crate::renderbuffers::Renderbuffers;
-use crate::{Error, SurfaceAccess, SurfaceID, SurfaceInfo, SurfaceType, gl};
+use crate::{Error, SurfaceAccess, SurfaceID, SurfaceInfo, SurfaceType, WindowingApiError, gl};
 use super::context::{Context, GL_FUNCTIONS};
 use super::device::Device;
 
@@ -109,6 +109,15 @@ impl Device {
                                                        &system_surface.size,
                                                        &context_attributes)?;
                 renderbuffers.bind_to_current_framebuffer(gl);
+
+                if gl.GetError() != gl::NO_ERROR {
+                    renderbuffers.destroy();
+                    if texture_object != 0 {
+                        gl.DeleteTextures(1, &mut texture_object);
+                    }
+                    // TODO: convert the GL error into a surfman error?
+                    return Err(Error::SurfaceCreationFailed(WindowingApiError::Failed));
+                }
 
                 debug_assert_eq!(gl.CheckFramebufferStatus(gl::FRAMEBUFFER),
                                  gl::FRAMEBUFFER_COMPLETE);

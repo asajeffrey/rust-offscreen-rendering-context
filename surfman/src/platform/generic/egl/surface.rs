@@ -116,8 +116,7 @@ impl EGLBackedSurface {
             if unpack_buffer != 0 { gl.BindBuffer(gl::PIXEL_UNPACK_BUFFER, unpack_buffer as _); }
 
             // Check for GL errors.
-            let err = gl.GetError();
-            if err != gl::NO_ERROR {
+            if gl.GetError() != gl::NO_ERROR {
                 if texture_object != 0 {
                     gl.DeleteTextures(1, &mut texture_object);
                 }
