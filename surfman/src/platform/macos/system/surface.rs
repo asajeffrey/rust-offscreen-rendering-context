@@ -2,7 +2,7 @@
 //
 //! Surface management for macOS.
 
-use crate::{Error, SurfaceAccess, SurfaceID, SurfaceType, SystemSurfaceInfo};
+use crate::{Error, SurfaceAccess, SurfaceID, SurfaceType, SystemSurfaceInfo, WindowingApiError};
 use super::device::Device;
 use super::ffi::{IOSurfaceGetAllocSize, IOSurfaceGetBaseAddress, IOSurfaceGetBytesPerRow};
 use super::ffi::{IOSurfaceLock, IOSurfaceUnlock, kCVPixelFormatType_32BGRA, kIOMapDefaultCache};
@@ -123,6 +123,10 @@ impl Device {
                     Some(self.create_view_info(&size, access, native_widget))
                 }
             };
+
+            if io_surface.obj.is_null() {
+                return Err(Error::SurfaceCreationFailed(WindowingApiError::Failed));
+            }
 
             Ok(Surface { io_surface, size, access, destroyed: false, view_info })
         }
