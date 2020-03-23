@@ -16,7 +16,7 @@ use crate::platform::generic::egl::ffi::EGL_GL_TEXTURE_2D_KHR;
 use crate::platform::generic::egl::ffi::EGL_IMAGE_PRESERVED_KHR;
 use crate::platform::generic::egl::ffi::EGL_NO_IMAGE_KHR;
 use crate::renderbuffers::Renderbuffers;
-use crate::{ContextAttributes, ContextID, Error, SurfaceID, SurfaceInfo};
+use crate::{ContextAttributes, ContextID, Error, SurfaceID, SurfaceInfo, WindowingApiError};
 use super::context::CurrentContextGuard;
 use super::device::EGL_FUNCTIONS;
 
@@ -82,7 +82,7 @@ impl EGLBackedSurface {
                               context_id: ContextID,
                               context_attributes: &ContextAttributes,
                               size: &Size2D<i32>)
-                              -> EGLBackedSurface {
+                              -> Result<EGLBackedSurface, Error> {
         let egl_image_attribs = [
             EGL_IMAGE_PRESERVED_KHR as EGLint,  egl::FALSE as EGLint,
             egl::NONE as EGLint,                0,
@@ -115,6 +115,16 @@ impl EGLBackedSurface {
             gl.BindTexture(gl::TEXTURE_2D, old_texture_object as _);
             if unpack_buffer != 0 { gl.BindBuffer(gl::PIXEL_UNPACK_BUFFER, unpack_buffer as _); }
 
+            // Check for GL errors.
+            let err = gl.GetError();
+            if err != gl::NO_ERROR {
+                if texture_object != 0 {
+                    gl.DeleteTextures(1, &mut texture_object);
+                }
+                // TODO: convert the GL error into a surfman error?
+                return Err(Error::SurfaceCreationFailed(WindowingApiError::Failed));
+            }
+
             // Create our image.
             let egl_client_buffer = texture_object as usize as EGLClientBuffer;
             let egl_image =
@@ -135,7 +145,7 @@ impl EGLBackedSurface {
 
             debug_assert_eq!(gl.CheckFramebufferStatus(gl::FRAMEBUFFER), gl::FRAMEBUFFER_COMPLETE);
 
-            EGLBackedSurface {
+            Ok(EGLBackedSurface {
                 context_id,
                 size: *size,
                 objects: EGLSurfaceObjects::TextureImage {
@@ -145,7 +155,7 @@ impl EGLBackedSurface {
                     renderbuffers,
                 },
                 destroyed: false,
-            }
+            })
         }
     }
 

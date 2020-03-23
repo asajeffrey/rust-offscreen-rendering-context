@@ -88,7 +88,7 @@ impl Device {
                                                      context.0.egl_context,
                                                      context.0.id,
                                                      &context_attributes,
-                                                     size)))
+                                                     size)?))
         })
     }
 
