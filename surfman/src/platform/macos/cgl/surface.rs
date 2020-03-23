@@ -110,7 +110,9 @@ impl Device {
                                                            &context_attributes)?;
                 renderbuffers.bind_to_current_framebuffer(gl);
 
-                if gl.GetError() != gl::NO_ERROR {
+                if gl.GetError() != gl::NO_ERROR ||
+                    gl.CheckFramebufferStatus(gl::FRAMEBUFFER) != gl::FRAMEBUFFER_COMPLETE
+                {
                     renderbuffers.destroy(gl);
                     if framebuffer_object != 0 {
                         gl.DeleteFramebuffers(1, &mut framebuffer_object);
@@ -121,9 +123,6 @@ impl Device {
                     // TODO: convert the GL error into a surfman error?
                     return Err(Error::SurfaceCreationFailed(WindowingApiError::Failed));
                 }
-
-                debug_assert_eq!(gl.CheckFramebufferStatus(gl::FRAMEBUFFER),
-                                 gl::FRAMEBUFFER_COMPLETE);
 
                 Ok(Surface {
                     system_surface,
