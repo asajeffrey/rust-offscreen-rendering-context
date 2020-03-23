@@ -2,7 +2,7 @@
 //
 //! A utility module for backends that wrap surfaces in OpenGL FBOs.
 
-use crate::Gl;
+use crate::{Error, Gl, WindowingApiError};
 use crate::context::{ContextAttributeFlags, ContextAttributes};
 use crate::gl::types::GLuint;
 use crate::gl;
@@ -29,7 +29,7 @@ impl Drop for Renderbuffers {
 
 impl Renderbuffers {
     pub(crate) fn new(gl: &Gl, size: &Size2D<i32>, attributes: &ContextAttributes)
-                      -> Renderbuffers {
+                      -> Result<Renderbuffers, Error> {
         unsafe {
             if attributes.flags.contains(ContextAttributeFlags::DEPTH |
                                          ContextAttributeFlags::STENCIL) {
@@ -41,7 +41,15 @@ impl Renderbuffers {
                                        size.width,
                                        size.height);
                 gl.BindRenderbuffer(gl::RENDERBUFFER, 0);
-                return Renderbuffers::CombinedDepthStencil(renderbuffer);
+                if gl.GetError() == gl::NO_ERROR {
+                    return Ok(Renderbuffers::CombinedDepthStencil(renderbuffer));
+                } else {
+                    if renderbuffer != 0 {
+                        gl.DeleteRenderbuffers(1, &mut renderbuffer);
+                    }
+                    // TODO: convert the GL error into a surfman error?
+                    return Err(Error::SurfaceCreationFailed(WindowingApiError::Failed));
+                }
             }
 
             let (mut depth_renderbuffer, mut stencil_renderbuffer) = (0, 0);
@@ -63,10 +71,21 @@ impl Renderbuffers {
             }
             gl.BindRenderbuffer(gl::RENDERBUFFER, 0);
 
-            Renderbuffers::IndividualDepthStencil {
+            if gl.GetError() != gl::NO_ERROR {
+                if depth_renderbuffer != 0 {
+                    gl.DeleteRenderbuffers(1, &mut depth_renderbuffer);
+                }
+                if stencil_renderbuffer != 0 {
+                    gl.DeleteRenderbuffers(1, &mut stencil_renderbuffer);
+                }
+                // TODO: convert the GL error into a surfman error?
+                return Err(Error::SurfaceCreationFailed(WindowingApiError::Failed))
+            }
+
+            Ok(Renderbuffers::IndividualDepthStencil {
                 depth: depth_renderbuffer,
                 stencil: stencil_renderbuffer,
-            }
+            })
         }
     }
 

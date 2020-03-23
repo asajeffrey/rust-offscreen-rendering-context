@@ -140,7 +140,7 @@ impl EGLBackedSurface {
                                                                            texture_object);
 
             // Bind renderbuffers as appropriate.
-            let renderbuffers = Renderbuffers::new(gl, size, context_attributes);
+            let renderbuffers = Renderbuffers::new(gl, size, context_attributes)?;
             renderbuffers.bind_to_current_framebuffer(gl);
 
             debug_assert_eq!(gl.CheckFramebufferStatus(gl::FRAMEBUFFER), gl::FRAMEBUFFER_COMPLETE);

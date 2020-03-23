@@ -107,7 +107,7 @@ impl Device {
 
                 let renderbuffers = Renderbuffers::new(gl,
                                                        &system_surface.size,
-                                                       &context_attributes);
+                                                       &context_attributes)?;
                 renderbuffers.bind_to_current_framebuffer(gl);
 
                 debug_assert_eq!(gl.CheckFramebufferStatus(gl::FRAMEBUFFER),
