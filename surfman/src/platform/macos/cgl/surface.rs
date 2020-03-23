@@ -89,7 +89,7 @@ impl Device {
         let _guard = self.temporarily_make_context_current(context);
         GL_FUNCTIONS.with(|gl| {
             unsafe {
-                let texture_object = self.bind_to_gl_texture(&system_surface.io_surface,
+                let mut texture_object = self.bind_to_gl_texture(&system_surface.io_surface,
                                                              &system_surface.size);
 
                 let mut framebuffer_object = 0;
@@ -105,13 +105,16 @@ impl Device {
                 let context_descriptor = self.context_descriptor(context);
                 let context_attributes = self.context_descriptor_attributes(&context_descriptor);
 
-                let renderbuffers = Renderbuffers::new(gl,
-                                                       &system_surface.size,
-                                                       &context_attributes)?;
+                let mut renderbuffers = Renderbuffers::new(gl,
+                                                           &system_surface.size,
+                                                           &context_attributes)?;
                 renderbuffers.bind_to_current_framebuffer(gl);
 
                 if gl.GetError() != gl::NO_ERROR {
                     renderbuffers.destroy(gl);
+                    if framebuffer_object != 0 {
+                        gl.DeleteFramebuffers(1, &mut framebuffer_object);
+                    }
                     if texture_object != 0 {
                         gl.DeleteTextures(1, &mut texture_object);
                     }
