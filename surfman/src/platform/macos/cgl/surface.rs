@@ -111,7 +111,7 @@ impl Device {
                 renderbuffers.bind_to_current_framebuffer(gl);
 
                 if gl.GetError() != gl::NO_ERROR {
-                    renderbuffers.destroy();
+                    renderbuffers.destroy(gl);
                     if texture_object != 0 {
                         gl.DeleteTextures(1, &mut texture_object);
                     }
