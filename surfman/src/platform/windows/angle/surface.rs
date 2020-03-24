@@ -154,7 +154,7 @@ impl Device {
             EGL_FUNCTIONS.with(|egl| {
                 let egl_surface = if let Some(HandleOrTexture::Texture(texture)) = share_handle {
                     let surface =
-                        egl.CreatePbufferFromClientBuffer(self.native_display.egl_display(),
+                        egl.CreatePbufferFromClientBuffer(self.egl_display,
                                                           EGL_D3D_TEXTURE_ANGLE,
                                                           texture as *const _,
                                                           egl_config,
