@@ -133,11 +133,11 @@ impl Device {
     }
 
     #[allow(non_snake_case)]
-    fn create_pbuffer_surface(&mut self,
-                              context: &Context,
-                              size: &Size2D<i32>,
-                              share_handle: Option<HANDLE>)
-                              -> Result<Surface, Error> {
+    pub fn create_pbuffer_surface(&mut self,
+                                  context: &Context,
+                                  size: &Size2D<i32>,
+                                  share_handle: Option<HANDLE>)
+                                  -> Result<Surface, Error> {
         let context_descriptor = self.context_descriptor(context);
         let egl_config = self.context_descriptor_to_egl_config(&context_descriptor);
 
