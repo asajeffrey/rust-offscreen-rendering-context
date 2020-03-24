@@ -11,6 +11,7 @@ use crate::gl;
 use crate::platform::generic::egl::device::EGL_FUNCTIONS;
 use crate::platform::generic::egl::error::ToWindowingApiError;
 use crate::platform::generic::egl::ffi::EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE;
+use crate::platform::generic::egl::ffi::EGL_D3D_TEXTURE_ANGLE;
 use crate::platform::generic::egl::ffi::EGL_DXGI_KEYED_MUTEX_ANGLE;
 use crate::platform::generic::egl::ffi::EGL_EXTENSION_FUNCTIONS;
 use crate::{Error, SurfaceAccess, SurfaceID, SurfaceInfo, SurfaceType};
@@ -152,11 +153,11 @@ impl Device {
             ];
 
             EGL_FUNCTIONS.with(|egl| {
-                let egl_surface = if let Some(HandleOrTexture::Texture(texture)) = share_handle {
+                let egl_surface = if let Some(handle) = share_handle {
                     let surface =
                         egl.CreatePbufferFromClientBuffer(self.egl_display,
                                                           EGL_D3D_TEXTURE_ANGLE,
-                                                          texture as *const _,
+                                                          handle,
                                                           egl_config,
                                                           attributes.as_ptr());
                     assert_ne!(surface, egl::NO_SURFACE);
