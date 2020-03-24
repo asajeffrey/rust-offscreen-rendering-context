@@ -177,7 +177,7 @@ impl Device {
                 // Bind renderbuffers as appropriate.
                 let context_descriptor = self.context_descriptor(context);
                 let context_attributes = self.context_descriptor_attributes(&context_descriptor);
-                let renderbuffers = Renderbuffers::new(gl, size, &context_attributes);
+                let renderbuffers = Renderbuffers::new(gl, size, &context_attributes)?;
                 renderbuffers.bind_to_current_framebuffer(gl);
 
                 debug_assert_eq!(gl.CheckFramebufferStatus(gl::FRAMEBUFFER),
