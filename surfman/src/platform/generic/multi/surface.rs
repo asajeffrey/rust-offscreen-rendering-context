@@ -59,6 +59,20 @@ pub enum NativeWidget<Def, Alt> where Def: DeviceInterface, Alt: DeviceInterface
     Alternate(<Alt::Connection as ConnectionInterface>::NativeWidget),
 }
 
+impl<Def, Alt> Clone for NativeWidget<Def, Alt> where
+    Def: DeviceInterface,
+    Alt: DeviceInterface,
+    <Def::Connection as ConnectionInterface>::NativeWidget: Clone,
+    <Alt::Connection as ConnectionInterface>::NativeWidget: Clone,
+{
+    fn clone(&self) -> Self {
+        match self {
+	    Self::Default(ref widget) => Self::Default(widget.clone()),
+	    Self::Alternate(ref widget) => Self::Alternate(widget.clone()),
+	}
+    }
+}
+
 impl<Def, Alt> Debug for Surface<Def, Alt> where Def: DeviceInterface, Alt: DeviceInterface {
     fn fmt(&self, f: &mut Formatter) -> Result<(), fmt::Error> {
         write!(f, "Surface")

@@ -230,7 +230,7 @@ impl EGLBackedSurface {
     }
 
     // TODO(pcwalton): Damage regions.
-    pub(crate) fn present(&self, egl_display: EGLDisplay, egl_context: EGLContext)
+    pub(crate) fn present(&mut self, egl_display: EGLDisplay, egl_context: EGLContext)
                           -> Result<(), Error> {
         unsafe {
             match self.objects {
@@ -242,8 +242,13 @@ impl EGLBackedSurface {
                     EGL_FUNCTIONS.with(|egl| {
                         egl.MakeCurrent(egl_display, egl_surface, egl_surface, egl_context);
 
-                        let ok = egl.SwapBuffers(egl_display, egl_surface);
-                        if ok != egl::FALSE {
+                        let mut width = 0;
+                        let mut height = 0;
+                        let ok = egl.SwapBuffers(egl_display, egl_surface) != egl::FALSE &&
+			    egl.QuerySurface(egl_display, egl_surface, egl::HEIGHT as _, &mut height) != egl::FALSE &&
+			    egl.QuerySurface(egl_display, egl_surface, egl::WIDTH as _, &mut width) != egl::FALSE;
+                        if ok {
+			    self.size = Size2D::new(width, height);
                             Ok(())
                         } else {
                             Err(Error::PresentFailed(egl.GetError().to_windowing_api_error()))
