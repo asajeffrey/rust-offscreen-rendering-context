@@ -13,7 +13,7 @@ repository = "https://github.com/servo/surfman"
 build = "build.rs"
 
 [build-dependencies]
-gl_generator = "0.13"
+gl_generator = "0.14"
 cfg_aliases = "0.1.0"
 
 [features]
@@ -60,8 +60,8 @@ rand = "0.7"
 [target.x86_64-apple-darwin.dependencies]
 cgl = "0.3.2"
 cocoa = "0.19"
-core-foundation = "0.6"
-core-graphics = "0.17"
+core-foundation = "0.20"
+core-graphics = "0.19"
 display-link = "0.2"
 io-surface = "0.12"
 mach = "0.3"
