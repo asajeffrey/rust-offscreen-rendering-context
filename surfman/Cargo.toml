@@ -59,8 +59,8 @@ rand = "0.7"
 
 [target.x86_64-apple-darwin.dependencies]
 cgl = "0.3.2"
-cocoa = "0.19"
-core-foundation = "0.20"
+cocoa = "0.20"
+core-foundation = "0.7"
 core-graphics = "0.19"
 display-link = "0.2"
 io-surface = "0.12"
